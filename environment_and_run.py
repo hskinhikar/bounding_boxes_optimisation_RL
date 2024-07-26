@@ -450,8 +450,7 @@ Traceback (most recent call last):
 Exception: Unrecognized type of observation <class 'tuple'>
 
 
-At this point not sure which data is being converted into a tuple.
-Steps to fix this coule be to add debug statements within Stable Baselines3 library functions.
+At this point I'm not sure at which point data being input into the PPO model is being converted into a tuple.
+Steps to fix this coule be to add debug statements within Stable Baselines3 library functions which are used to initialise and train the model.
 Alternatively, we can create a custom wrapper around the 'learn' method of PPO to capture and print observations before it is passed into 'obs_as_tensor'
-We can override the 'collect_rollouts' method to add debug prints before calling 'obs_as_tensor'
 """
