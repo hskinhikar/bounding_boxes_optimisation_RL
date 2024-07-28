@@ -147,11 +147,9 @@ def process_directory(directory_path, json_path, threshold,  contrast_factor, ga
 
         # Open image
         image = Image.open(image_path).convert("RGB")
-
+        # image enchancements
         image = enhance_contrast(image_path, contrast_factor)
-
         image = gamma_correction(image, gamma)
-        #image = reduce_noise(image)
         image = sharpen_image(image)
 
                 # Display the enhanced image
@@ -166,10 +164,10 @@ def process_directory(directory_path, json_path, threshold,  contrast_factor, ga
 
         if len(prediction['masks']) == 0:
             print(f"No predictions for image {image_filename} with threshold {threshold}")
-        
+            
         # Select the best polygon
         best_polygon = select_best_polygon(prediction)
-
+        
         # Draw polygons
         draw_polygons(image_path, annotations, best_polygon, image_id)
 
@@ -182,10 +180,9 @@ def main():
     image_path =  r"C:\Users\shiri\Desktop\Dataverze\Vision_experimentation\only_ships_images"
     json_path = r"C:\Users\shiri\Desktop\Dataverze\Vision_experimentation\output_coco.json"
 
-    threshold = 0  # Lower confidence threshold
+    threshold = 0  # Minimal confidence threshold
     contrast_factor = 5.0  # Factor to increase contrast
     gamma = 1.2 # gamma factor correction
-    # Process the directory
     process_directory(image_path, json_path, threshold, contrast_factor, gamma)
 
 if __name__ == "__main__":
