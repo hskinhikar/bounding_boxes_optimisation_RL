@@ -11,4 +11,4 @@ This project utilizes reinforcement learning to optimize bounding boxes generate
 - **multiple_verticed_polygons_displayed.py**: Modifies predictions to limit polygons to eight vertices.
 - **both_polygons_displayed.py**: Ensures only the highest-confidence polygon is displayed alongside the ground truth.
 
-This project is actively under development, with ongoing work to improve the reinforcement learning aspects. The working documents provide in-depth explanations of the methodologies and progress.
+This project is actively under development, with ongoing work to improve the reinforcement learning aspects. The working documents provide in-depth explanations of the methodologies and progress. I would recommend reading through the 'task' section of the Reinforcement_learning_breakdown.pdf for an overview of the task
