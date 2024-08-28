@@ -10,7 +10,7 @@ This project utilises reinforcement learning to optimize bounding boxes generate
 - **multiple_verticed_polygons_displayed.py**: Modifies predictions to limit polygons to eight vertices.
 - **both_polygons_displayed.py**: Ensures only the highest-confidence polygon is displayed alongside the ground truth.
 - **gen_predicted_grndreality_polygons.py**: Generates initial predicted and ground reality polygons for reinforcement learning.
-- **reinforcement_learning_script.py**: The main script for reinforcement learning, currently under development.
+- **environment_and_run.py**: The main script for reinforcement learning, currently under development.
 - **agent_actively_moving_vertices.mp4**: Video showing the agent actively moving the vertices of the polygon to maximise rewards 
 
 Explanation documents:
