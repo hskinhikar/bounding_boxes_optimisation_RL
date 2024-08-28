@@ -1,6 +1,6 @@
 ### Bounding Boxes Optimization with Reinforcement Learning
 
-This project utilizes reinforcement learning to optimize bounding boxes generated around ships in satellite imagery, leveraging Mask RCNN models. Below is an overview of the repository's contents:
+This project utilises reinforcement learning to optimize bounding boxes generated around ships in satellite imagery, leveraging Mask RCNN models. Below is an overview of the repository's contents:
 
 - **Bounding_analysis_working_doc.pdf**: A detailed document outlining the thought process, diversions, and progress of the project.
 - **Reinforcement_learning_breakdown.pdf**: Explains reinforcement learning concepts and their application within the project.
