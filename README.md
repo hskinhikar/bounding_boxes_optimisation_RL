@@ -1,16 +1,18 @@
-### Bounding Boxes Optimization with Reinforcement Learning
+### Bounding Boxes Optimisation with Reinforcement Learning
 
 This project utilises reinforcement learning to optimize bounding boxes generated around ships in satellite imagery, leveraging Mask RCNN models. Below is an overview of the repository's contents:
 
 
 
-
+Progression in scripts until we have a script that can produce predicted and ground reality polygons which can be fed into the reinforcement learning script:
 - **drawing_bounding_boxes.py**: Draws bounding boxes around ships using Mask RCNN.
 - **display_multiple_polygon_predictions_as_is.py**: Displays predicted polygons alongside ground truth and processed input images.
 - **multiple_verticed_polygons_displayed.py**: Modifies predictions to limit polygons to eight vertices.
 - **both_polygons_displayed.py**: Ensures only the highest-confidence polygon is displayed alongside the ground truth.
 - **gen_predicted_grndreality_polygons.py**: Generates initial predicted and ground reality polygons for reinforcement learning.
-- **reinforcement_learning_script.py**: The main script for reinforcement learning, currently under development.
+
+Reinforcement learning:
+- **reinforcement_learning_script.py**: The main script for reinforcement learning
 - **agent_actively_moving_vertices.mp4**: Video showing the agent actively moving the vertices of the polygon to maximise rewards 
 
 Explanation documents:
