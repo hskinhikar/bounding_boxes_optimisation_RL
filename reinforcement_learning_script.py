@@ -20,16 +20,25 @@ from matplotlib.patches import Polygon as pltPolygon
 class PolygonEnv(gym.Env):
 
     """
-    Custom gym environment that sets up the reinforcement learning environmetn such that:
-    - it observes the vertices of the initially predicted polygon as well as the image itself
-    - it moves the vertices of the initial polygon to maximise rewards from the reward policy
-    Reward policy:
-    - positive reward for IoU overlap between the predicted polygon and ground truth polygon
-    ^ this encourages the initial polygon to cover as much of ground truth polygon as possible
-    - negative reward for parts of predicted polygon that don't overlap with the ground truth polygon
-    ^ this is to avoid the initial polygon from covering the entire image as opposed to just the ground truth
-    - negative reward for actions that make the edges of the polygon intersect themselves
-    ^ avoid the initial polygon from being an invalid shape of which IoU cannot be taken
+    A custom Gym environment designed for reinforcement learning, where:
+
+    - The environment observes the vertices of the initially predicted polygon and the associated image. 
+
+    - It adjusts the vertices of the initial polygon to maximize rewards according to the defined reward policy.
+
+    Reward Policy:
+
+    - Positive reward for achieving a high IoU (Intersection over Union) between the predicted polygon and the ground truth polygon.
+      This incentivizes the predicted polygon to closely align with the ground truth, maximizing overlap.
+
+    - Negative reward for any areas of the predicted polygon that do not overlap with the ground truth polygon.
+      This discourages the polygon from incorrectly covering areas outside the ground truth.
+
+    - Negative reward for any actions that cause the edges of the polygon to intersect or overlap incorrectly.
+      This prevents the formation of invalid polygon shapes where IoU cannot be accurately calculated.
+
+    - Negative reward for any actions that move the vertices of the polygon outside the image bounds.
+      This penalty is scaled by the IoU area to ensure it does not overpower other rewards and penalties.
     """
 
     def __init__(self, initial_polygon, ground_truth_polygon, image):
@@ -62,29 +71,38 @@ class PolygonEnv(gym.Env):
             "vertices": np.array(self.current_polygon.exterior.coords)[:-1].flatten()
         }
         # return observations as dictionaries and not single arrays to attempt to satisfy sb3 format
-        #obs_array = self._dict_to_array(observations)
         info = {}
-        #print(f"PolygonEnv.reset: {type(observations)}")
         return observations, info
 
     def step(self, action):
         """
         Takes an action and returns next observation as a dictionary, along with reward, done, truncated and info
-        Converts observation into a numpy array using _dict_to_array
         returns numpy array, reward, done, truncated and info
         """
         vertices = np.array(self.current_polygon.exterior.coords)[:-1]# Current vertices of polygon
         adjusted_vertices = vertices + action.reshape(-1, 2)# Adjust vertices based on action
+
         new_polygon = Polygon(adjusted_vertices)# Create new polygon with adjusted vertices
         new_polygon = orient(new_polygon, sign=1.0)
 
+        # Check if the adjusted vertices are within the image bounds
+        img_height, img_width = self.image.size[1], self.image.size[0]
+        
+        # Define the image boundary polygon
+        image_boundary_polygon = Polygon([(0, 0), (img_width, 0), (img_width, img_height), (0, img_height)])
+        
+
         if not new_polygon.is_valid:
-            reward = -1.0#penalise if new polygon is not valid
+            reward = -1.0#penalise if new polygon is not valid, may be useful to experiment with the stregth of penalty
         else:
             self.current_polygon = new_polygon
             iou = self.calculate_iou(self.current_polygon, self.ground_truth_polygon)
             non_overlap_penalty = self.calculate_non_overlap_penalty(self.current_polygon, self.ground_truth_polygon)
-            reward = iou - (1 - iou) - non_overlap_penalty # Compite reward
+            # Calculate the area of the predicted polygon that is outside the image bounds
+            outside_area = max(new_polygon.difference(image_boundary_polygon).area, 0)
+            # Scale the penalty by IoU
+            outside_penalty = -iou * outside_area 
+            reward = iou - (1 - iou) - non_overlap_penalty + outside_penalty # Compile reward
 
         done = self.is_done(self.current_polygon, self.ground_truth_polygon)
         info = {}
@@ -95,14 +113,7 @@ class PolygonEnv(gym.Env):
             "vertices": np.array(self.current_polygon.exterior.coords)[:-1].flatten() # flatten polygons vertices to 1D
         }
 
-        #obs_array = self._dict_to_array(obs)
         return obs, reward, done, truncated, info
-
-    def _dict_to_array(self, obs_dict):
-        # flatten and combine image and vertices of initial polygon into a 1 dimensional array
-        image_flat = obs_dict["image"].flatten()
-        vertices_flat = obs_dict["vertices"].flatten()
-        return np.concatenate([image_flat, vertices_flat])
 
     def calculate_iou(self, poly1, poly2):
         # calculates Intersection over Union - metric for measuring overlap between the initial and ground truth polygons
@@ -177,7 +188,7 @@ plt.ion()
 def real_time_visualisation(image, predicted_polygon, ground_truth_polygon):
     """
     Visualizes the predicted polygon and ground truth polygon over the input image.
-    This version updates the same plot window instead of creating a new one each time.
+    Updates the same plot window instead of creating a new one each time.
     """
     plt.clf()  # Clear the previous plot
 
@@ -219,7 +230,7 @@ def main():
 
     polygons_data = process_directory(directory_path, json_path, model, transform, threshold, contrast_factor, gamma)
 
-    total_epochs = 3
+    total_epochs = 1 # change to greater number of epoch when greater amount of resources are available
     total_timesteps = 10000
     checkpoint_interval = 1000
     reward_log = []
@@ -242,7 +253,6 @@ def main():
 
             model = PPO('MultiInputPolicy', env, verbose=1, policy_kwargs=policy_kwargs)
             for timestep in range(0, total_timesteps, checkpoint_interval):
-                #print(f"Before learning step: env reset obs type: {type(env.reset()[0])}")
                 model.learn(total_timesteps=checkpoint_interval, reset_num_timesteps=False)
                 model.save(f"ppo_model_epoch_{epoch}_image_{image_index}_timestep_{timestep}")
                 
@@ -250,20 +260,13 @@ def main():
                 rewards = []
                 for i in range(100):
                     obs, _ = env.reset()
-                    #print(f"During reward logging: obs type: {type(obs)}")
                     done = False
                     total_reward = 0
                     while not done:
                         action, _ = model.predict(obs)
-                        obs, reward, done, _,_ = env.step(action)# changed this for sb3
-                        #print(f"Step observation type: {type(obs)}")
-
-                        """
-                        incorporate real time visualisation of vertices being moved here
-                        """
-                        
+                        obs, reward, done, _,_ = env.step(action)
+                        # real time visualisation of moving vertices, comment out the line before to stop visualisation and dedicate greater resources to training
                         real_time_visualisation(image,env.current_polygon,env.ground_truth_polygon)
-
                         total_reward += reward
                     rewards.append(total_reward)
                 reward_log.append({
