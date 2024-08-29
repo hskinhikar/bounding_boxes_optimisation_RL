@@ -12,6 +12,7 @@ This repository is focused on refining ship detection in satellite imagery by op
      - `reinforcement_learning_script.py`: The main script for setting up the RL environment and executing the training process using Proximal Policy Optimization (PPO). This script is responsible for adjusting polygon vertices in real time, using feedback from the environment to improve alignment with the ground truth.
      - `Reinforcement_learning_explanation.md`: Explains the specific application of reinforcement learning within this project, including the design of the custom RL environment and the training methodology.
      - `agent_actively_moving_vertices.mp4`: Real-time visualisation of the agent carrying out an actions based on reward.
+     - `future_work`: Outlines issues/conclusions of current implementation and outlines work that needs to be carried out in the future to consolidate learnings from this project
 
 ### 2. **Ship Outline Generation**
    - **Description:** This sub-folder contains scripts and resources for generating the initial ship outlines using the Mask R-CNN model. It includes various utilities to handle and process polygon data, ensuring they are prepared for the reinforcement learning phase.
