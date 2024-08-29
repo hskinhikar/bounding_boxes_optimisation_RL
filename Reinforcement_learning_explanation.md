@@ -7,7 +7,7 @@ However, this approach seemed difficult to implement in practice. It’s hard to
 
 In this new plan, the ground truth polygons outlining the ships are created manually. Then, a model like Mask R-CNN is used to make an initial prediction of the ship’s outline. After that, reinforcement learning is applied, where each vertex of the predicted polygon is adjusted until it matches the ground truth polygon more closely. The aim is to show that there’s an improvement in performance when the model is trained with reinforcement learning. This can be tested by comparing the reinforcement learning model to the Mask R-CNN model that made the initial prediction.
 
-The purpose of this report is to explain reinforcement learning, why it’s a good fit for this task, how it was used, and how this application is different from typical reinforcement learning tasks. The document bounding_analysis_working_doc.pdf explains the development process that led to the script used to generate the initial predicted and ground truth polygons, which were then used in the reinforcement learning script.
+The purpose of this report is to explain reinforcement learning, why it’s a good fit for this task, how it was used, and how this application is different from typical reinforcement learning tasks. 
 
 
 **Overview of Reinforcement Learning**
