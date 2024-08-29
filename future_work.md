@@ -1,7 +1,7 @@
 # Future Works
 
 - **Current Limitations in Training**:
-  - The existing reinforcement learning script is technically capable of training the model. However, due to limited resources, it has not been feasible to continue training over multiple epochs.
+  - The existing reinforcement learning script is technically capable of training the model. However, due to limited resources, it has not been feasible to continue training through the entire dataset, let alone multiple epochs - reinforcement learning is an incredibly time-consuming and resource-intensive process so this is expected.
   
 - **Parallelized Environments**:
   - It is advisable to explore the implementation of parallelized environments to allow the model to train on multiple images simultaneously. This approach could significantly reduce training time.
