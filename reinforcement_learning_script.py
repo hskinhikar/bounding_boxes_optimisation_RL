@@ -13,7 +13,7 @@ import torch.nn as nn
 from PIL import Image
 import os
 import json
-from gen_predicted_grndreality_polygons import process_directory
+from Ship_outline_generation/gen_predicted_grndreality_polygons import process_directory
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon as pltPolygon
 
