@@ -42,11 +42,11 @@ Simply put, by focusing on fine-tuning each vertex's position based on the satel
 **Best way to explain the application of RL is by describing the flow of code**
 
 
-1.	*Imports and Dependencies*
+*Imports and Dependencies*
 -	Imports necessary libraries such as Gymnasium (for RL environments), Shapely (for geometric operations) and Stable Baselines 3 (for RL algorithms – PPO is used in current script). 
 -	Imports initially predicted polygons and ground reality polygons from a separate script so that these can be used for reinforcement learning
 
-2.	*‘PolygonEnv’ Class*
+*‘PolygonEnv’ Class*
    
 Initialisation:
 -	This class is a custom Gym environment, initialised with imported polygons and the input image
@@ -67,10 +67,12 @@ Reward policy:
 -	To ensure polygon stays within the bounds of the image. This penalty is a negative of the area of the polygon that is outside the image, which is then weighted by the magnitude of IoU so that this penalty doesn’t overpower other rewards.
 -	This overall reward policy should ensure that the predicted polygon matches the shape of the ground truth as much as possible whilst remaining a valid polygon and staying within the image.
 
-3.	*‘CustomCNNFeatureExtractor’*
+
+*‘CustomCNNFeatureExtractor’*
 -	Custom feature extractor that uses a pre-trained ResNet18 model to extract features from the image, which are then used by the RL model to make decisions.
 
-4.	*Training Loop*
+
+*Training Loop*
 The main function sets up the training loop. The RL agent (using the PPO algorithm) iterates over multiple images, adjusting the polygon to maximize the reward.
 Real-Time Visualization:
 -	As the agent makes adjustments, the process is visualized in real time, showing the evolution of the polygon's shape as it learns.
