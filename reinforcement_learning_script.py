@@ -260,8 +260,8 @@ def main():
             ground_truth_polygon = data['ground_truth']
             image = Image.open(os.path.join(directory_path, image_filename)).convert("RGB")
             
-            #re-create environment for each new image
-            # potentially remove parallel environment if script doesn't work
+            # re-create environment for each new image
+            # attempt to implement parallel environments at a later date
             env = (PolygonEnv(initial_polygon, ground_truth_polygon, image))
             model.set_env(env) # reuse existing model but set it to new environment
 
