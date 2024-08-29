@@ -235,6 +235,23 @@ def main():
     checkpoint_interval = 1000
     reward_log = []
 
+    policy_kwargs = dict(
+                features_extractor_class=CustomCNNFeatureExtractor,
+                features_extractor_kwargs={}
+            )
+
+    # create the environment for the first image to initialise the model
+    first_data = polygons_data[0]
+    image_filename = first_data['image']
+    initial_polygon = first_data['prediction']
+    ground_truth_polygon = first_data['ground_truth']
+    image = Image.open(os.path.join(directory_path, image_filename)).convert("RGB")
+    env = (PolygonEnv(initial_polygon,ground_truth_polygon,image))
+
+    # initialise the PPO model once
+    model = PPO('MultiInputPolicy', env, verbose=1, policy_kwargs=policy_kwargs, device='cuda')
+    
+    # iterate over all images
     for epoch in range(total_epochs):
         print(f"Starting epoch {epoch + 1}/{total_epochs}")
         for image_index, data in enumerate(polygons_data):
@@ -243,15 +260,11 @@ def main():
             ground_truth_polygon = data['ground_truth']
             image = Image.open(os.path.join(directory_path, image_filename)).convert("RGB")
             
-            #create environment
+            #re-create environment for each new image
+            # potentially remove parallel environment if script doesn't work
             env = (PolygonEnv(initial_polygon, ground_truth_polygon, image))
-            
-            policy_kwargs = dict(
-                features_extractor_class=CustomCNNFeatureExtractor,
-                features_extractor_kwargs={}
-            )
+            model.set_env(env) # reuse existing model but set it to new environment
 
-            model = PPO('MultiInputPolicy', env, verbose=1, policy_kwargs=policy_kwargs)
             for timestep in range(0, total_timesteps, checkpoint_interval):
                 model.learn(total_timesteps=checkpoint_interval, reset_num_timesteps=False)
                 model.save(f"ppo_model_epoch_{epoch}_image_{image_index}_timestep_{timestep}")
@@ -265,7 +278,7 @@ def main():
                     while not done:
                         action, _ = model.predict(obs)
                         obs, reward, done, _,_ = env.step(action)
-                        # real time visualisation of moving vertices, comment out the line before to stop visualisation and dedicate greater resources to training
+                        # real time visualisation of moving vertices, comment out the line below to stop real-time visualisation
                         real_time_visualisation(image,env.current_polygon,env.ground_truth_polygon)
                         total_reward += reward
                     rewards.append(total_reward)
