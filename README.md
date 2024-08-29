@@ -22,6 +22,14 @@ This repository is focused on refining ship detection in satellite imagery by op
      - `both_polygons_displayed.py`: Selects the highest-confidence polygon and displays it alongside the ground truth for further processing.
      - `gen_predicted_grndreality_polygons.py`: Prepares the predicted and ground truth polygons for use in the reinforcement learning framework.
 
+### 3. **Cleaned Dataset**
+   - **Description:** This folder contains the cleaned dataset that is used for training the models. It has been pre-processed to include only relevant data, ensuring that each image contains only ships and excludes unnecessary elements such as buildings or bridges. The original dataset was for training models to determine whether satellite imagery has ships or not: https://www.kaggle.com/datasets/rhammell/ships-in-satellite-imagery/  
+   - **Key Contents:**
+     - Pre-processed satellite images focusing on ships.
+     - Annotations and metadata necessary for training and evaluating the models.
+
+### 4. **Additional Files Used**
+   - **Description:** This folder includes various scripts for data processing to create a custom dataset.
 
 
 
