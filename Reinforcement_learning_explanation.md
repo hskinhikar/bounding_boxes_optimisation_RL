@@ -68,11 +68,13 @@ Reward policy:
 -	This overall reward policy should ensure that the predicted polygon matches the shape of the ground truth as much as possible whilst remaining a valid polygon and staying within the image.
 
 
+
 *‘CustomCNNFeatureExtractor’*
 -	Custom feature extractor that uses a pre-trained ResNet18 model to extract features from the image, which are then used by the RL model to make decisions.
 
 
 *Training Loop*
+
 The main function sets up the training loop. The RL agent (using the PPO algorithm) iterates over multiple images, adjusting the polygon to maximize the reward.
 Real-Time Visualization:
 -	As the agent makes adjustments, the process is visualized in real time, showing the evolution of the polygon's shape as it learns.
