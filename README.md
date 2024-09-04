@@ -1,4 +1,4 @@
-# Bounding Boxes Optimization Using Reinforcement Learning
+# Bounding Boxes Optimisation Using Reinforcement Learning
 
 ## Overview
 
